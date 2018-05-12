@@ -41,6 +41,10 @@ impl Square {
         }
     }
 
+    pub fn from_tuple(tuple: (i8, i8)) -> Square {
+        Self::new(tuple.0, tuple.1)
+    }
+
     pub fn neighbour(&self, d: Direction) -> Option<Square> {
         let (d_column, d_row): (i8, i8) = match d {
             Direction::N => (0, 1),
@@ -108,14 +112,14 @@ impl FromStr for Square {
         chars
             .next()
             .and_then(|c| match c {
-                'a'...'h' => Some(c as i32),
+                'a'...'h' => Some(c as i8 - 'a' as i8),
+                'A'...'H' => Some(c as i8 - 'A' as i8),
                 _ => None,
             })
-            .map(|c| c - 'a' as i32)
             .and_then(|c| chars.next().map(|r| (c, r)))
-            .and_then(|(c, r)| r.to_digit(10).map(|d| (c, d - 1)))
-            .map(|(c, r)| Ok(Square::new(c as i8, r as i8)))
-            .unwrap()
+            .and_then(|(c, r)| r.to_digit(10).map(|d| (c, d as i8 - 1)))
+            .map(Square::from_tuple)
+            .ok_or_else(|| MyError::new("y"))
     }
 }
 
@@ -125,7 +129,7 @@ mod tests {
 
     #[test]
     fn g7_has_correct_north_east_neighbour() {
-        let square = Square::new(6, 6);
+        let square: Square = "G7".parse().unwrap();
         let neighbour = square.neighbour(Direction::NE);
         if let Some(neighbour) = neighbour {
             assert_eq!(neighbour, Square::new(7, 7));
@@ -154,6 +158,42 @@ mod tests {
         let neighbour = square.neighbour(Direction::SW);
         if let Some(neighbour) = neighbour {
             assert_eq!(neighbour, Square::new(0, 0));
+        } else {
+            assert!(false);
+        }
+    }
+
+    #[test]
+    fn a8_has_no_north_west_neighbour() {
+        let square: Square = "A8".parse().unwrap();
+        let neighbour = square.neighbour(Direction::NW);
+        assert!(neighbour.is_none());
+    }
+
+    #[test]
+    fn b7_has_correct_north_west_neighbour() {
+        let square: Square = "B7".parse().unwrap();
+        let neighbour = square.neighbour(Direction::NW);
+        if let Some(neighbour) = neighbour {
+            assert_eq!(neighbour, Square::new(0, 7));
+        } else {
+            assert!(false);
+        }
+    }
+
+    #[test]
+    fn h1_has_no_south_east_neighbour() {
+        let square: Square = "h1".parse().unwrap();
+        let neighbour = square.neighbour(Direction::SE);
+        assert!(neighbour.is_none());
+    }
+
+    #[test]
+    fn g2_has_correct_south_east_neighbour() {
+        let square: Square = "G2".parse().unwrap();
+        let neighbour = square.neighbour(Direction::SE);
+        if let Some(neighbour) = neighbour {
+            assert_eq!(neighbour, Square::new(7, 0));
         } else {
             assert!(false);
         }
