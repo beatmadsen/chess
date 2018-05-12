@@ -1,5 +1,5 @@
 mod direction;
-mod my_error;
+mod error;
 mod name;
 
 use name::Name;

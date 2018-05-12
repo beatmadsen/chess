@@ -3,32 +3,32 @@ use std::fmt;
 use std::num::ParseIntError;
 
 #[derive(Debug)]
-pub struct MyError {
+pub struct ChessError {
     details: String,
 }
 
-impl MyError {
-    pub fn new(msg: &str) -> MyError {
-        MyError {
+impl ChessError {
+    pub fn new(msg: &str) -> ChessError {
+        ChessError {
             details: msg.to_string(),
         }
     }
 }
 
-impl fmt::Display for MyError {
+impl fmt::Display for ChessError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.details)
     }
 }
 
-impl Error for MyError {
+impl Error for ChessError {
     fn description(&self) -> &str {
         &self.details
     }
 }
 
-impl From<ParseIntError> for MyError {
+impl From<ParseIntError> for ChessError {
     fn from(err: ParseIntError) -> Self {
-        MyError::new(err.description())
+        ChessError::new(err.description())
     }
 }

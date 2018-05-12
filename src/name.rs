@@ -1,12 +1,12 @@
+use direction::Direction;
+use error::ChessError;
+use std::fmt;
+use std::str::FromStr;
+
 /*
 internal representation of column is integer,
 can be transformed to char for display purposes
 */
-use direction::Direction;
-use my_error::MyError;
-use std::fmt;
-use std::str::FromStr;
-
 #[derive(PartialEq, Debug)]
 pub struct Name {
     column: i8,
@@ -57,10 +57,10 @@ impl Name {
 }
 
 impl FromStr for Name {
-    type Err = MyError;
+    type Err = ChessError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if s.chars().count() != 2 {
-            return Err(MyError::new("x"));
+            return Err(ChessError::new("x"));
         }
         let mut chars = s.chars();
         chars
@@ -73,7 +73,7 @@ impl FromStr for Name {
             .and_then(|c| chars.next().map(|r| (c, r)))
             .and_then(|(c, r)| r.to_digit(10).map(|d| (c, d as i8 - 1)))
             .map(Name::from_tuple)
-            .ok_or_else(|| MyError::new("y"))
+            .ok_or_else(|| ChessError::new("y"))
     }
 }
 
