@@ -1,6 +1,7 @@
 mod direction;
 mod error;
 mod name;
+mod square;
 
 use name::Name;
 

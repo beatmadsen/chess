@@ -7,7 +7,7 @@ use std::str::FromStr;
 internal representation of column is integer,
 can be transformed to char for display purposes
 */
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct Name {
     column: i8,
     row: i8,
@@ -16,6 +16,19 @@ pub struct Name {
 impl fmt::Display for Name {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Name: {}, {}", self.column, self.row)
+    }
+}
+
+fn deltas(d: Direction) -> (i8, i8) {
+    match d {
+        Direction::N => (0, 1),
+        Direction::NE => (1, 1),
+        Direction::E => (1, 0),
+        Direction::SE => (1, -1),
+        Direction::S => (0, -1),
+        Direction::SW => (-1, -1),
+        Direction::W => (-1, 0),
+        Direction::NW => (-1, 1),
     }
 }
 
@@ -35,16 +48,7 @@ impl Name {
     }
 
     pub fn neighbour(&self, d: Direction) -> Option<Name> {
-        let (d_column, d_row): (i8, i8) = match d {
-            Direction::N => (0, 1),
-            Direction::NE => (1, 1),
-            Direction::E => (1, 0),
-            Direction::SE => (1, -1),
-            Direction::S => (0, -1),
-            Direction::SW => (-1, -1),
-            Direction::W => (-1, 0),
-            Direction::NW => (-1, 1),
-        };
+        let (d_column, d_row) = deltas(d);
         let (column, row) = (self.column + d_column, self.row + d_row);
         match (column, row) {
             (0...7, 0...7) => Some(Name {
