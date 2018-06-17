@@ -1,6 +1,9 @@
 use name::Name;
 
-pub trait Piece {}
+pub trait Piece {
+    // TODO: too simplistic, will also need to know about certain aspects of game state.
+    fn legal_moves(&self, current_location: Name) -> Vec<(Name, Name)>;
+}
 
 pub struct Pawn {}
 pub struct Queen {}
@@ -16,8 +19,13 @@ pub struct Square {
 
 impl Square {
     pub fn legal_moves(&self) -> Vec<(Name, Name)> {
-        // TODO: implement this
-        vec![("b2".parse().unwrap(), "b3".parse().unwrap())]
+        if let Some(piece) = &self.piece {
+            let n: Name = self.name.to_owned();
+            piece.legal_moves(n)
+        } else {
+            vec![]
+        }
+        // vec![("b2".parse().unwrap(), "b3".parse().unwrap())]
     }
 }
 

@@ -7,7 +7,7 @@ use std::str::FromStr;
 internal representation of column is integer,
 can be transformed to char for display purposes
 */
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Copy)]
 pub struct Name {
     column: i8,
     row: i8,
