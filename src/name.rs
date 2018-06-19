@@ -20,15 +20,16 @@ impl fmt::Display for Name {
 }
 
 fn deltas(d: Direction) -> (i8, i8) {
+    use direction::Direction::*;
     match d {
-        Direction::N => (0, 1),
-        Direction::NE => (1, 1),
-        Direction::E => (1, 0),
-        Direction::SE => (1, -1),
-        Direction::S => (0, -1),
-        Direction::SW => (-1, -1),
-        Direction::W => (-1, 0),
-        Direction::NW => (-1, 1),
+        N => (0, 1),
+        NE => (1, 1),
+        E => (1, 0),
+        SE => (1, -1),
+        S => (0, -1),
+        SW => (-1, -1),
+        W => (-1, 0),
+        NW => (-1, 1),
     }
 }
 
@@ -56,6 +57,18 @@ impl Name {
                 column: column,
             }),
             _ => None,
+        }
+    }
+
+    pub fn collect_neighbours(&self, d: Direction) -> Vec<Name> {
+        match self.neighbour(d) {
+            Some(neighbour) => {
+                let ns = neighbour.collect_neighbours(d);
+                let mut v = vec![neighbour];
+                v.extend(ns);
+                v
+            }
+            _ => vec![],
         }
     }
 }
@@ -199,5 +212,24 @@ mod tests {
         } else {
             assert!(false);
         }
+    }
+
+    #[test]
+    fn a1_collects_correct_east_neighbours() {
+        let name: Name = "a1".parse().unwrap();
+        let neighbours = name.collect_neighbours(Direction::E);
+        let expected: Vec<Name> = ["b1", "c1", "d1", "e1", "f1", "g1", "h1"]
+            .iter()
+            .map(|s| s.parse().unwrap())
+            .collect();
+        assert_eq!(neighbours, expected);
+    }
+
+    #[test]
+    fn a3_collects_correct_south_west_neighbours() {
+        let name: Name = "d3".parse().unwrap();
+        let neighbours = name.collect_neighbours(Direction::SW);
+        let expected: Vec<Name> = ["c2", "b1"].iter().map(|s| s.parse().unwrap()).collect();
+        assert_eq!(neighbours, expected);
     }
 }

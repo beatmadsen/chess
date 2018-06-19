@@ -1,4 +1,3 @@
-use direction::Direction;
 use name::Name;
 
 // TODO: state machine to keep track of relevant game state
@@ -30,18 +29,12 @@ impl Piece for Bishop {
         use direction::Direction::*;
         vec![NE, NW, SW, SE]
             .iter()
-            .flat_map(|d| self.collect_neighbours(d.clone()))
+            .flat_map(|d| self.location.collect_neighbours(d.clone()))
             .map(|neighbour| (self.location, neighbour))
             .collect()
     }
 
     fn box_clone(&self) -> Box<Piece> {
-        unimplemented!();
-    }
-}
-
-impl Bishop {
-    fn collect_neighbours(&self, d: Direction) -> Vec<Name> {
-        unimplemented!();
+        Box::new((*self).clone())
     }
 }
